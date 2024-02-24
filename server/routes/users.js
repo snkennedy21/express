@@ -49,4 +49,21 @@ router.delete("/:id", async (req, res) => {
   res.json(user);
 });
 
+router.post("/login", async (req, res) => {
+  console.log("HELLO");
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatch) {
+    res.json({ message: "Invalid credentials" });
+  }
+
+  res.json({ message: "Logged in" });
+});
+
 module.exports = router;
